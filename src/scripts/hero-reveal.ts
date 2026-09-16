@@ -132,11 +132,13 @@ export function initHeroReveal() {
       lastFrameAt = performance.now();
       lastMediaTime = metadata.mediaTime;
     }
-    if (metadata.mediaTime >= BONIFACIO.endTime) {
+    // The hero asset starts at the original 0.85 s frame: no network seek needed.
+    const sourceTime = metadata.mediaTime + BONIFACIO.startTime;
+    if (sourceTime >= BONIFACIO.endTime) {
       finish();
       return;
     }
-    render(metadata.mediaTime);
+    render(sourceTime);
     root.dataset.bonifacio = 'playing';
     frame = video.requestVideoFrameCallback(onFrame);
   };
@@ -169,11 +171,7 @@ export function initHeroReveal() {
       }
       // Loading can reset playbackRate; apply the hero speed after loading too.
       video.playbackRate = heroPlaybackRate;
-      const sought = new Promise<void>((resolve) =>
-        video.addEventListener('seeked', () => resolve(), { once: true }),
-      );
-      video.currentTime = BONIFACIO.startTime;
-      await Promise.all([sought, fontsReady]);
+      await fontsReady;
       if (done || root.dataset.bonifacio !== 'pending') {
         finish();
         return;
