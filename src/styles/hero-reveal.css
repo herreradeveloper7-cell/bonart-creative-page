@@ -1,0 +1,54 @@
+.hero-copy-stage {
+  position: relative;
+  /* Scale relative to the measured text height; video proportions stay intact. */
+  --bonifacio-height-ratio: 1.12;
+  --bonifacio-brush-y: 0.53;
+}
+
+.hero-copy {
+  display: flow-root;
+}
+
+html[data-bonifacio='pending'] .hero-copy {
+  clip-path: inset(0 100% 0 0);
+}
+
+.bonifacio-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  user-select: none;
+  visibility: hidden;
+}
+
+html[data-bonifacio='playing'] .bonifacio-layer {
+  visibility: visible;
+}
+
+.bonifacio-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1280px;
+  height: 720px;
+  max-width: none;
+  transform-origin: 0 0;
+  pointer-events: none;
+}
+
+@media (max-width: 760px) {
+  .hero-copy-stage {
+    --bonifacio-height-ratio: 1.2;
+    --bonifacio-brush-y: 0.55;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-copy {
+    clip-path: none !important;
+  }
+  .bonifacio-layer {
+    display: none;
+  }
+}

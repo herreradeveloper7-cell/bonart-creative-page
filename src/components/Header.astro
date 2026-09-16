@@ -1,0 +1,119 @@
+<a class="skip-link" href="#contenido">
+  Saltar al contenido
+</a>
+<header class="site-header animate-fade-in-down">
+  <a class="brand" href="#inicio" aria-label="Bonart Design — Inicio">
+    <img src="/media/bonart-logo.png" alt="Bonart" width="3117" height="2380" />
+  </a>
+  <button
+    class="menu-toggle"
+    type="button"
+    aria-expanded="false"
+    aria-controls="primary-nav"
+    aria-label="Abrir menú"
+  >
+    <span></span>
+    <span></span>
+  </button>
+  <nav class="primary-nav" id="primary-nav" aria-label="Navegación principal">
+    <a href="#inicio" aria-current="page">
+      Inicio
+    </a>
+    <a href="#servicios">Servicios</a>
+    <a href="#proyectos">Proyectos</a>
+    <a href="#nosotros">Nosotros</a>
+  </nav>
+  <a
+    class="button button-primary header-contact"
+    href="https://wa.me/573215663191"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Hablemos{' '}
+    <svg
+      width="28"
+      height="28"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M4 12h15M13 5l7 7-7 7"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  </a>
+</header>
+
+<style>
+  .animate-fade-in-down {
+    animation: header-fade-in-down 2600ms cubic-bezier(0.42, 0, 0.25, 1)
+      backwards;
+  }
+
+  @keyframes header-fade-in-down {
+    from {
+      opacity: 0;
+      transform: translateY(-22px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Focusing the navigation makes it immediately available to keyboard users. */
+  .site-header:focus-within {
+    animation: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-fade-in-down {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  const menu = document.querySelector<HTMLButtonElement>('.menu-toggle');
+  const nav = document.querySelector<HTMLElement>('.primary-nav');
+  const header = document.querySelector<HTMLElement>('.site-header');
+  const syncHeader = () =>
+    header?.classList.toggle('is-scrolled', window.scrollY > 24);
+  syncHeader();
+  window.addEventListener('scroll', syncHeader, { passive: true });
+  const closeMenu = () => {
+    menu?.setAttribute('aria-expanded', 'false');
+    menu?.setAttribute('aria-label', 'Abrir menú');
+    nav?.classList.remove('is-open');
+  };
+  menu?.addEventListener('click', () => {
+    const open = menu.getAttribute('aria-expanded') !== 'true';
+    menu.setAttribute('aria-expanded', String(open));
+    menu.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
+    nav?.classList.toggle('is-open', open);
+  });
+  nav
+    ?.querySelectorAll('a')
+    .forEach((link) => link.addEventListener('click', closeMenu));
+  document.addEventListener('keydown', (event) => {
+    if (
+      event.key === 'Escape' &&
+      menu?.getAttribute('aria-expanded') === 'true'
+    ) {
+      closeMenu();
+      menu.focus();
+    }
+  });
+  document.addEventListener('click', (event) => {
+    if (
+      event.target instanceof Node &&
+      !nav?.contains(event.target) &&
+      !menu?.contains(event.target)
+    )
+      closeMenu();
+  });
+</script>

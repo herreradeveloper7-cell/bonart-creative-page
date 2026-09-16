@@ -1,0 +1,426 @@
+---
+import { ArrowLeft, ArrowRight } from '@lucide/astro';
+import { reviews } from '../data/testimonials';
+---
+
+<section class="testimonials-section" aria-labelledby="testimonials-title">
+  <svg
+    class="testimonials-paint"
+    viewBox="0 0 1440 500"
+    preserveAspectRatio="none"
+    aria-hidden="true"
+  >
+    <path
+      fill="var(--color-rose-kiss)"
+      d="M-25 500C10 459 32 361 88 363C152 365 133 461 201 500ZM1200 500C1169 462 1242 407 1230 350C1212 267 1206 204 1253 214C1321 228 1300 421 1440 438V500Z"
+    />
+  </svg>
+  <div class="testimonials-container">
+    <header class="testimonials-heading">
+      <p>Referencias</p>
+      <h2 id="testimonials-title">
+        Lo que dicen <span>de </span>
+        <span class="testimonials-ending">
+          nosotros.
+          <svg
+            class="testimonials-crayon"
+            viewBox="0 0 132 82"
+            fill="none"
+            aria-hidden="true"
+            style="color: var(--color-rose-kiss)"
+          >
+            <path
+              d="M6 54C29 38 66 13 87 9C105 5 43 50 33 67C24 82 84 53 96 57C103 60 84 77 100 77L125 70"
+              stroke="currentColor"
+              stroke-width="3.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </span>
+      </h2>
+    </header>
+    <div
+      class="review-stage"
+      role="region"
+      aria-roledescription="carrusel"
+      aria-label="Opiniones de clientes"
+    >
+      <div class="review-bubble">
+        <div class="review-slides" aria-live="polite" aria-atomic="true">
+          {reviews.map((review, index) => (
+            <figure class="review-slide" hidden={index !== 0}>
+              <svg
+                class="review-quote"
+                width="56"
+                height="56"
+                viewBox="0 0 64 56"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path d="M27 5C19 8 8 18 4 29C0 40 5 49 15 49C23 49 28 43 28 36C28 29 24 25 18 25C20 19 25 14 29 10C32 7 30 4 27 5Z" />
+                <path d="M57 5C49 8 38 18 34 29C30 40 35 49 45 49C53 49 58 43 58 36C58 29 54 25 48 25C50 19 55 14 59 10C62 7 60 4 57 5Z" />
+              </svg>
+              <blockquote>{review.text}</blockquote>
+              <figcaption>
+                <strong>{review.name}</strong>
+                <span>{review.label}</span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+        <div class="review-controls" hidden>
+          <span class="review-counter" aria-hidden="true">
+            1 / {reviews.length}
+          </span>
+          <button
+            type="button"
+            data-direction="-1"
+            aria-label="Opinión anterior"
+          >
+            <ArrowLeft size={20} aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            data-direction="1"
+            aria-label="Siguiente opinión"
+          >
+            <ArrowRight size={20} aria-hidden="true" />
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const section = document.querySelector<HTMLElement>('.testimonials-section');
+  const motion = matchMedia('(prefers-reduced-motion: reduce)');
+  if (section && !motion.matches && 'IntersectionObserver' in window) {
+    const heading = section.querySelector<HTMLElement>(
+      '.testimonials-heading',
+    )!;
+    const cardStage = section.querySelector<HTMLElement>('.review-stage')!;
+    const path = section.querySelector<SVGPathElement>(
+      '.testimonials-crayon path',
+    )!;
+    const length = path.getTotalLength();
+    const animations: Animation[] = [];
+    heading.style.opacity = cardStage.style.opacity = '0';
+    path.style.strokeDasharray = `${length}`;
+    path.style.strokeDashoffset = `${length}`;
+    let done = false;
+    let started = false;
+    const finish = () => {
+      done = true;
+      observer.disconnect();
+      animations.forEach((animation) => animation.cancel());
+      heading.style.removeProperty('opacity');
+      cardStage.style.removeProperty('opacity');
+      path.style.removeProperty('stroke-dasharray');
+      path.style.removeProperty('stroke-dashoffset');
+      motion.removeEventListener('change', finish);
+    };
+    const enter = async () => {
+      if (started || done) return;
+      started = true;
+      observer.disconnect();
+      try {
+        [heading, cardStage].forEach((element, index) =>
+          animations.push(
+            element.animate(
+              [
+                {
+                  opacity: 0,
+                  transform: `translateX(${index === 0 ? 36 : -36}px)`,
+                },
+                { opacity: 1, transform: 'translateX(0)' },
+              ],
+              {
+                duration: 1100,
+                easing: 'cubic-bezier(.22, 1, .36, 1)',
+                fill: 'both',
+              },
+            ),
+          ),
+        );
+        await Promise.all(animations.map((animation) => animation.finished));
+        if (done) return;
+        const draw = path.animate(
+          [{ strokeDashoffset: `${length}` }, { strokeDashoffset: '0' }],
+          { duration: 1000, easing: 'ease-in-out', fill: 'both' },
+        );
+        animations.push(draw);
+        await draw.finished;
+      } finally {
+        finish();
+      }
+    };
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (
+          entries.some(
+            (entry) => entry.isIntersecting && entry.intersectionRatio >= 0.2,
+          )
+        ) {
+          void enter().catch(finish);
+        }
+      },
+      { threshold: 0.2, rootMargin: '0px 0px -15% 0px' },
+    );
+    observer.observe(section);
+    motion.addEventListener('change', finish);
+  }
+  const stage = document.querySelector<HTMLElement>('.review-stage');
+  if (stage) {
+    const slides = [...stage.querySelectorAll<HTMLElement>('.review-slide')];
+    const controls = stage.querySelector<HTMLElement>('.review-controls')!;
+    const counter = stage.querySelector<HTMLElement>('.review-counter')!;
+    let active = 0;
+    let moving = false;
+    let running: Animation[] = [];
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+    reduced.addEventListener('change', () => {
+      if (reduced.matches) running.forEach((animation) => animation.finish());
+    });
+    controls.hidden = false;
+    controls.querySelectorAll<HTMLButtonElement>('button').forEach((button) => {
+      button.addEventListener('click', async () => {
+        if (moving) return;
+        moving = true;
+        const previous = slides[active];
+        active =
+          (active + Number(button.dataset.direction) + slides.length) %
+          slides.length;
+        slides[active].hidden = false;
+        counter.textContent = `${active + 1} / ${slides.length}`;
+        const next = slides[active];
+        previous.setAttribute('aria-hidden', 'true');
+        next.removeAttribute('aria-hidden');
+        previous.style.zIndex = '2';
+        next.style.zIndex = '1';
+        if (!reduced.matches) {
+          const direction = Number(button.dataset.direction);
+          const options = {
+            duration: 850,
+            easing: 'cubic-bezier(.4, 0, .2, 1)',
+            fill: 'both' as FillMode,
+          };
+          running = [
+            next.animate(
+              [
+                {
+                  transform: `translate(12px, 16px) scale(.95) rotate(${2 * direction}deg)`,
+                  zIndex: '1',
+                  offset: 0,
+                },
+                {
+                  transform: `translate(${24 * direction}%, -18%) scale(.98) rotate(${7 * direction}deg)`,
+                  zIndex: '1',
+                  offset: 0.45,
+                },
+                {
+                  transform: `translate(${24 * direction}%, -18%) scale(.98) rotate(${7 * direction}deg)`,
+                  zIndex: '3',
+                  offset: 0.46,
+                },
+                {
+                  transform: 'translate(0, 0) scale(1) rotate(0)',
+                  zIndex: '3',
+                  offset: 1,
+                },
+              ],
+              options,
+            ),
+            previous.animate(
+              [
+                { transform: 'scale(1)', opacity: 1 },
+                { transform: 'translateY(14px) scale(.95)', opacity: 0 },
+              ],
+              options,
+            ),
+          ];
+          await Promise.allSettled(
+            running.map((animation) => animation.finished),
+          );
+        }
+        previous.hidden = true;
+        running.forEach((animation) => animation.cancel());
+        running = [];
+        previous.style.removeProperty('z-index');
+        next.style.removeProperty('z-index');
+        moving = false;
+      });
+    });
+  }
+</script>
+
+<style>
+  .testimonials-section {
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+    padding: clamp(56px, 6vw, 88px) 7%;
+    background: var(--color-seashell);
+  }
+  .testimonials-paint {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+  }
+  .testimonials-container {
+    max-width: 1160px;
+    margin-inline: auto;
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.3fr);
+    gap: clamp(32px, 5vw, 72px);
+    align-items: center;
+  }
+  .testimonials-heading {
+    text-align: left;
+  }
+  .testimonials-heading p {
+    margin: 0 0 14px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+  }
+  .testimonials-heading h2 {
+    margin: 0;
+    font-size: clamp(36px, 4vw, 58px);
+    line-height: 1.08;
+  }
+  .testimonials-heading h2 span {
+    color: var(--color-lipstick-red);
+  }
+  .testimonials-ending {
+    white-space: nowrap;
+  }
+  .testimonials-crayon {
+    display: inline-block;
+    width: 1.25em;
+    height: 0.85em;
+    margin-left: 0.12em;
+    vertical-align: middle;
+    overflow: visible;
+  }
+  .review-stage {
+    position: relative;
+    min-width: 0;
+    width: 100%;
+    max-width: 540px;
+    justify-self: center;
+  }
+  .review-bubble {
+    position: relative;
+  }
+  .review-quote {
+    position: absolute;
+    top: 34px;
+    left: 32px;
+    color: var(--color-rose-kiss);
+    fill: var(--color-rose-kiss);
+  }
+  .review-slides {
+    display: grid;
+  }
+  .review-slide {
+    position: relative;
+    margin: 0;
+    grid-area: 1 / 1;
+    padding: 38px 30px 90px 92px;
+    background: #fffdfa;
+    border-radius: 32px 28px 34px 26px;
+    box-shadow: 0 12px 36px #4015220c;
+    transform-origin: center;
+  }
+  .review-slide[hidden] {
+    display: block;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .review-sample {
+    display: block;
+    font-size: 11px;
+    color: #777983;
+    margin-bottom: 12px;
+  }
+  blockquote {
+    margin: 0;
+    font-size: clamp(14px, 1.1vw, 16px);
+    line-height: 1.6;
+  }
+  figcaption {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border-top: 1px solid #07101f15;
+    margin-top: 24px;
+    padding-top: 18px;
+    font-size: 14px;
+  }
+  figcaption span {
+    color: #777983;
+    font-size: 12px;
+  }
+  .review-controls {
+    position: absolute;
+    z-index: 4;
+    bottom: 24px;
+    right: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+  .review-controls[hidden] {
+    display: none;
+  }
+  .review-counter {
+    color: #777983;
+    font-size: 12px;
+    margin-right: 4px;
+  }
+  .review-controls button {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid var(--color-rose-kiss);
+    border-radius: 50%;
+    color: #07101f;
+    background: transparent;
+    cursor: pointer;
+  }
+  .review-controls button:hover {
+    background: var(--color-rose-kiss);
+    color: white;
+  }
+  .review-controls button:focus-visible {
+    outline: 2px solid var(--color-lipstick-red);
+    outline-offset: 4px;
+  }
+  @media (max-width: 760px) {
+    .testimonials-section {
+      padding: 48px 28px;
+    }
+    .testimonials-container {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+    .review-slide {
+      padding: 70px 24px 90px;
+    }
+    .review-quote {
+      top: 22px;
+      left: 22px;
+      width: 36px;
+      height: 36px;
+    }
+  }
+</style>

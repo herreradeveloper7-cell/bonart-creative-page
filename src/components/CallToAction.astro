@@ -1,0 +1,219 @@
+---
+import { ArrowRight } from '@lucide/astro';
+---
+
+<section class="cta-section" id="contacto" aria-labelledby="cta-title">
+  <script is:inline>
+    if (
+      !matchMedia('(prefers-reduced-motion: reduce)').matches &&
+      'requestVideoFrameCallback' in HTMLVideoElement.prototype &&
+      'IntersectionObserver' in window
+    ) {
+      document.currentScript.closest('section').dataset.reveal = 'waiting';
+    }
+  </script>
+  <span class="cta-paint cta-paint--top" aria-hidden="true"></span>
+  <span class="cta-paint cta-paint--bottom" aria-hidden="true"></span>
+  <div class="cta-container" data-cta-copy>
+    <div class="cta-heading">
+      <p>Es el momento</p>
+      <h2 id="cta-title">
+        ¿Hacemos algo
+        <br />
+        <span>increíble juntos?</span>
+      </h2>
+    </div>
+    <div class="cta-divider" aria-hidden="true"></div>
+    <div class="cta-action">
+      <p>
+        Cuéntanos tu idea y descubramos
+        <br />
+        cómo podemos hacerla realidad.
+      </p>
+      <a
+        href="https://wa.me/573215663191"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Iniciar proyecto{' '}
+        <ArrowRight size={18} stroke-width={2.2} aria-hidden="true" />
+      </a>
+    </div>
+  </div>
+  <script is:inline>
+    const ctaSection = document.currentScript.closest('section');
+    if (ctaSection.dataset.reveal === 'waiting') {
+      ctaSection.querySelector('.cta-container').style.clipPath =
+        'inset(0 0 0 100%)';
+    }
+  </script>
+  <video
+    class="cta-runner"
+    muted
+    playsinline
+    preload="none"
+    aria-hidden="true"
+    tabindex="-1"
+    disablepictureinpicture
+  >
+    <source data-src="/media/bonifacio-reveal.webm" type="video/webm" />
+  </video>
+</section>
+
+<script>
+  import { initCtaReveal } from '../scripts/cta-reveal';
+  initCtaReveal();
+</script>
+
+<style>
+  .cta-section {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: var(--color-lipstick-red);
+    color: white;
+    padding: clamp(48px, 4.5vw, 68px) 7%;
+  }
+  .cta-container {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) 2px minmax(260px, 0.72fr);
+    align-items: center;
+    gap: clamp(30px, 4vw, 65px);
+    max-width: 1160px;
+    margin-inline: auto;
+  }
+  .cta-heading > p {
+    margin: 0 0 14px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .cta-heading h2 {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: clamp(34px, 3.8vw, 58px);
+    font-weight: 700;
+    line-height: 1.02;
+    letter-spacing: -0.055em;
+  }
+  .cta-heading h2 span {
+    color: #ffc0d6;
+  }
+  .cta-divider {
+    width: 2px;
+    height: 110px;
+    background: #ffabc8;
+    opacity: 0.72;
+  }
+  .cta-action > p {
+    margin: 0 0 20px;
+    font-size: clamp(13px, 1vw, 15px);
+    line-height: 1.55;
+  }
+  .cta-action a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    min-width: 200px;
+    min-height: 46px;
+    padding: 10px 22px;
+    border-radius: 999px;
+    background: white;
+    color: var(--color-lipstick-red);
+    font-size: 13px;
+    font-weight: 600;
+    transition:
+      transform 180ms ease,
+      box-shadow 180ms ease;
+  }
+  .cta-action a:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 30px #75001e40;
+  }
+  .cta-section[data-reveal='waiting'] [data-cta-copy],
+  .cta-section[data-reveal='loading'] [data-cta-copy] {
+    clip-path: inset(0 0 0 100%);
+  }
+  :global(.cta-section > .cta-runner) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1280px;
+    height: 720px;
+    max-width: none;
+    transform-origin: 0 0;
+    z-index: 2;
+    pointer-events: none;
+    visibility: hidden;
+  }
+  :global(.cta-section[data-reveal='playing'] > .cta-runner) {
+    visibility: visible;
+  }
+  .cta-action a {
+    position: relative;
+    z-index: 3;
+  }
+  .cta-paint {
+    position: absolute;
+    z-index: 0;
+    display: block;
+    background: var(--color-rose-kiss);
+    pointer-events: none;
+  }
+  .cta-paint--top {
+    top: -120px;
+    right: 5%;
+    width: 330px;
+    height: 160px;
+    border-radius: 44% 56% 64% 36% / 62% 44% 56% 38%;
+    transform: rotate(15deg);
+  }
+  .cta-paint--bottom {
+    bottom: -110px;
+    left: -35px;
+    width: 310px;
+    height: 170px;
+    border-radius: 52% 48% 38% 62% / 48% 63% 37% 52%;
+    transform: rotate(11deg);
+  }
+  @media (max-width: 900px) {
+    .cta-container {
+      grid-template-columns: 1fr 1px minmax(240px, 0.75fr);
+    }
+  }
+  @media (max-width: 760px) {
+    .cta-section {
+      padding: 48px 28px 54px;
+    }
+    .cta-container {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    .cta-divider {
+      width: 100%;
+      height: 1px;
+    }
+    .cta-heading h2 {
+      font-size: clamp(32px, 8.5vw, 44px);
+    }
+    .cta-action a {
+      min-width: 200px;
+      max-width: 100%;
+    }
+    .cta-paint--top {
+      right: -120px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    [data-cta-copy] {
+      clip-path: none !important;
+    }
+    .cta-runner {
+      display: none;
+    }
+  }
+</style>

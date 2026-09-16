@@ -1,46 +1,51 @@
-# Astro Starter Kit: Basics
+# BonArt Creative
+
+Landing de BonArt: servicios, proyectos, presentación del estudio, testimonios y contacto por WhatsApp. Construida con Astro, TypeScript y CSS; iconos de Lucide y tipografía Poppins de Google Fonts.
+
+## Desarrollo
+
+Requisitos: Node.js 22.12 o superior y pnpm 11.21.0.
 
 ```sh
-pnpm create astro@latest -- --template basics
+pnpm install --frozen-lockfile
+pnpm dev
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+Abre http://localhost:4321. `npm run dev` también funciona después de instalar las dependencias con pnpm. Mantener `pnpm-lock.yaml` como único lockfile.
 
-## 🚀 Project Structure
+## Comandos
 
-Inside of your Astro project, you'll see the following folders and files:
+- `pnpm check`: revisión de Astro y TypeScript.
+- `pnpm format`: aplicar formato uniforme.
+- `pnpm format:check`: comprobar el formato.
+- `pnpm build`: generar el sitio estático en `dist/`.
+- `pnpm preview`: revisar la compilación localmente.
+- `pnpm validate`: ejecutar tipos, formato y compilación.
 
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
-```
+## Estructura
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+- `src/pages/index.astro`: composición y orden de las secciones.
+- `src/layouts/Layout.astro`: documento HTML, metadatos y fuentes.
+- `src/components/`: secciones y elementos de la interfaz; estilos y comportamiento propios junto a cada componente.
+- `src/data/`: contenido editable de proyectos y testimonios.
+- `src/scripts/`: reproducción y revelado sincronizado de Bonifacio.
+- `src/styles/`: paleta, tipografía, estilos globales y máscara del hero.
+- `public/media/`: imágenes y videos utilizados en el sitio.
+- `docs/`: notas de mantenimiento y animación.
 
-## 🧞 Commands
+## Edición de contenido
 
-All commands are run from the root of the project, from a terminal:
+Proyectos: `src/data/projects.ts`. Testimonios: `src/data/testimonials.ts`.
+Contacto: `https://wa.me/573215663191`. Los enlaces están en Header, Hero, CallToAction, Footer y BonifacioContact.
+La paleta y las fuentes se configuran en `src/styles/global.css`.
+Bonifacio comparte duración de 5 segundos en hero y CTA; consultar `docs/bonifacio-hero.md`.
+Las entradas respetan movimiento reducido. El acceso flotante a WhatsApp aparece con el primer scroll hacia abajo.
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
+## Antes de publicar
 
-## 👀 Want to learn more?
+1. Ejecutar `pnpm validate`.
+2. Revisar escritorio y móvil con `pnpm preview`: menú, enlaces de WhatsApp, tarjetas, animaciones y navegación por teclado.
+3. Confirmar con los clientes el contenido de los testimonios: los textos actuales se redactaron como propuestas, no se recibieron como reseñas verificadas.
+4. Revisar `git diff` y `git status` antes de crear el commit y hacer push.
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+El proyecto genera archivos estáticos. No requiere variables de entorno ni servicios de backend. `dist/`, `node_modules/` y archivos `.env*` no se incluyen en Git. El dominio público y su configuración de despliegue se definirán al publicar.

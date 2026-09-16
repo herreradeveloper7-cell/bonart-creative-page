@@ -1,0 +1,206 @@
+<div class="cloud-background" aria-hidden="true">
+  {[0, 1].map((index) => (
+    <video
+      class="clouds"
+      muted
+      playsinline
+      preload="none"
+      poster="/media/bonart-clouds-poster.jpg"
+      tabindex="-1"
+      style={`opacity: ${index === 0 ? 1 : 0}; z-index: ${index === 0 ? 1 : 2}`}
+    >
+      <!-- Sources are assigned only when motion is allowed and the hero is visible. -->
+    </video>
+  ))}
+  <svg
+    class="cloud-paint-edge"
+    viewBox="0 0 1600 240"
+    preserveAspectRatio="none"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <defs>
+      <linearGradient id="cloud-seashell-fade" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="currentColor" stop-opacity="0" />
+        <stop offset=".55" stop-color="currentColor" stop-opacity=".15" />
+        <stop offset="1" stop-color="currentColor" />
+      </linearGradient>
+      <filter
+        id="cloud-paint-texture"
+        x="-5%"
+        y="-25%"
+        width="110%"
+        height="150%"
+      >
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency=".018 .11"
+          numOctaves="3"
+          seed="8"
+          result="grain"
+        />
+        <feDisplacementMap
+          in="SourceGraphic"
+          in2="grain"
+          scale="20"
+          xChannelSelector="R"
+          yChannelSelector="G"
+        />
+      </filter>
+    </defs>
+    <rect width="1600" height="240" fill="url(#cloud-seashell-fade)" />
+    <g fill="currentColor" filter="url(#cloud-paint-texture)">
+      <path
+        opacity=".3"
+        d="M-40 92 Q80 133 190 102 T390 120 T620 94 T840 124 T1090 99 T1320 113 T1640 86 V260 H-40Z"
+      />
+      <path
+        opacity=".55"
+        d="M-40 132 Q95 104 210 144 T450 131 T680 152 T890 124 T1110 146 T1370 126 T1640 138 V260 H-40Z"
+      />
+      <path d="M-40 164 Q55 150 125 167 L185 157 220 173 265 163 Q345 147 420 173 L475 164 510 178 565 166 Q655 154 735 181 L785 166 830 177 Q925 147 1020 170 L1070 161 1110 173 Q1210 186 1285 161 L1345 170 1390 159 Q1510 144 1640 168 V260 H-40Z" />
+    </g>
+    <!-- An opaque final strip guarantees an exact Seashell join at any viewport. -->
+    <path
+      fill="currentColor"
+      d="M0 208 Q200 214 400 209 T800 213 T1200 210 T1600 208 V240 H0Z"
+    />
+  </svg>
+</div>
+
+<style>
+  .cloud-paint-edge {
+    position: absolute;
+    z-index: 3;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: clamp(150px, 19vw, 260px);
+    color: var(--color-seashell);
+    pointer-events: none;
+  }
+</style>
+
+<script>
+  const videos = [...document.querySelectorAll<HTMLVideoElement>('.clouds')];
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  if (videos.length === 2) {
+    let active = 0;
+    let blending = false;
+    let running = false;
+    let frame = 0;
+    let generation = 0;
+    let fadeDuration = 2;
+    let inView = false;
+    let pageActive = true;
+    let initialized = false;
+    let starting = false;
+    const hero = document.querySelector('#inicio');
+    const shouldPlay = () =>
+      inView && pageActive && !document.hidden && !reducedMotion.matches;
+
+    const loadSources = () => {
+      if (initialized) return;
+      const source = window.matchMedia('(max-width: 767px)').matches
+        ? '/media/bonart-clouds-mobile.mp4'
+        : '/media/bonart-clouds.mp4';
+      videos.forEach((video) => {
+        video.src = source;
+      });
+      initialized = true;
+    };
+
+    const pause = () => {
+      running = false;
+      starting = false;
+      generation++;
+      cancelAnimationFrame(frame);
+      videos.forEach((video) => video.pause());
+    };
+
+    const tick = () => {
+      if (!running) return;
+      const outgoing = videos[active];
+      const incoming = videos[1 - active];
+
+      if (!blending && Number.isFinite(outgoing.duration)) {
+        fadeDuration = Math.min(2, outgoing.duration / 3);
+        if (outgoing.currentTime >= outgoing.duration - fadeDuration) {
+          blending = true;
+          incoming.currentTime = 0;
+          incoming.style.zIndex = '2';
+          incoming.style.opacity = '0';
+          outgoing.style.zIndex = '1';
+          // Keep the outgoing frame opaque underneath, even if buffering delays playback.
+          incoming.play().catch(pause);
+        }
+      }
+
+      if (blending && incoming.readyState >= 2 && !incoming.seeking) {
+        // Use playback time so pausing or buffering also freezes the transition.
+        const progress = Math.min(incoming.currentTime / fadeDuration, 1);
+        incoming.style.opacity = String(
+          progress * progress * (3 - 2 * progress),
+        );
+        if (progress >= 1) {
+          outgoing.style.opacity = '0';
+          outgoing.pause();
+          outgoing.currentTime = 0;
+          incoming.style.zIndex = '1';
+          active = 1 - active;
+          blending = false;
+        }
+      }
+      frame = requestAnimationFrame(tick);
+    };
+
+    const play = async () => {
+      if (!shouldPlay() || running || starting) return;
+      loadSources();
+      starting = true;
+      const attempt = ++generation;
+      try {
+        await Promise.all(
+          videos
+            .filter((_, index) => index === active || blending)
+            .map((video) => video.play()),
+        );
+        if (attempt !== generation) return;
+        starting = false;
+        running = true;
+
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(tick);
+      } catch {
+        if (attempt === generation) pause();
+      }
+    };
+
+    const syncPlayback = () => {
+      if (shouldPlay()) void play();
+      else pause();
+    };
+    reducedMotion.addEventListener('change', syncPlayback);
+    document.addEventListener('visibilitychange', syncPlayback);
+    videos.forEach((video) => {
+      video.muted = true;
+    });
+    if (hero) {
+      const observer = new IntersectionObserver(([entry]) => {
+        inView = entry.isIntersecting;
+        syncPlayback();
+      });
+      observer.observe(hero);
+    }
+    window.addEventListener('pagehide', () => {
+      pageActive = false;
+      pause();
+    });
+    window.addEventListener('pageshow', () => {
+      pageActive = true;
+      syncPlayback();
+    });
+  }
+</script>

@@ -1,0 +1,214 @@
+<a
+  class="bonifacio-contact"
+  href="https://wa.me/573215663191"
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label="Habla con BonArt por WhatsApp"
+>
+  <span class="bonifacio-visual">
+    <span class="bonifacio-message">
+      ¿Creamos algo juntos?<small>Haz clic y hablemos</small>
+    </span>
+    <svg class="bonifacio-greeting" viewBox="0 0 835 855" aria-hidden="true">
+      <defs>
+        <clipPath id="bonifacio-body-clip">
+          <rect width="887" height="887" />
+        </clipPath>
+        <clipPath id="bonifacio-arm-clip">
+          <rect x="887" width="887" height="887" />
+        </clipPath>
+      </defs>
+      <image
+        href="/media/bonifacio-greeting.webp"
+        width="1774"
+        height="887"
+        clip-path="url(#bonifacio-body-clip)"
+      />
+      <g transform="translate(-1030 -70)">
+        <g class="bonifacio-wave">
+          <image
+            href="/media/bonifacio-greeting.webp"
+            width="1774"
+            height="887"
+            clip-path="url(#bonifacio-arm-clip)"
+          />
+        </g>
+      </g>
+    </svg>
+  </span>
+</a>
+
+<script is:inline>
+  (() => {
+    const contact = document.currentScript.previousElementSibling;
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+    let previousY = window.scrollY;
+    contact.dataset.entrance = 'waiting';
+    contact.style.visibility = 'hidden';
+    const reveal = () => {
+      window.removeEventListener('scroll', onScroll);
+      contact.style.removeProperty('visibility');
+      contact.dataset.entrance = reduced.matches ? 'ready' : 'entering';
+    };
+    const onScroll = () => {
+      const currentY = window.scrollY;
+      if (currentY > previousY && currentY > 0) reveal();
+      previousY = currentY;
+    };
+    contact.addEventListener('animationend', (event) => {
+      if (event.target === contact && contact.dataset.entrance === 'entering')
+        contact.dataset.entrance = 'ready';
+    });
+    reduced.addEventListener('change', () => {
+      if (reduced.matches && contact.dataset.entrance === 'entering')
+        contact.dataset.entrance = 'ready';
+    });
+    window.addEventListener('scroll', onScroll, { passive: true });
+  })();
+</script>
+
+<style>
+  .bonifacio-contact {
+    position: fixed;
+    z-index: 40;
+    right: max(20px, env(safe-area-inset-right));
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    width: 185px;
+    color: #07101f;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .bonifacio-message {
+    position: relative;
+    display: block;
+    margin: 0 4px 12px 0;
+    padding: 12px 15px;
+    background: var(--color-seashell);
+    border: 1px solid #fa609660;
+    border-radius: 19px 19px 5px 19px;
+    box-shadow: 0 5px 20px #40152215;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+  }
+  .bonifacio-message::after {
+    content: '';
+    position: absolute;
+    right: 24px;
+    bottom: -7px;
+    width: 12px;
+    height: 12px;
+    background: var(--color-seashell);
+    border-right: 1px solid #fa609660;
+    border-bottom: 1px solid #fa609660;
+    transform: rotate(45deg);
+  }
+  .bonifacio-message small {
+    display: block;
+    margin-top: 3px;
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--color-lipstick-red);
+  }
+  .bonifacio-greeting {
+    display: block;
+    width: 170px;
+    height: auto;
+    overflow: visible;
+    filter: drop-shadow(0 3px 3px #40152218);
+  }
+  .bonifacio-wave {
+    transform-origin: 1400px 750px;
+    animation: bonifacio-wave 4s ease-in-out infinite;
+  }
+  @keyframes bonifacio-wave {
+    0%,
+    12%,
+    70%,
+    100% {
+      transform: rotate(0);
+    }
+    24%,
+    48% {
+      transform: rotate(-9deg);
+    }
+    36%,
+    60% {
+      transform: rotate(7deg);
+    }
+  }
+  .bonifacio-visual {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    width: 100%;
+    transform-origin: bottom center;
+  }
+  .bonifacio-contact {
+    transform-origin: bottom right;
+  }
+  .bonifacio-contact[data-entrance='waiting'] .bonifacio-wave {
+    animation-play-state: paused;
+  }
+  .bonifacio-contact[data-entrance='entering'] {
+    animation: animate-fade-in-up 1100ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  @keyframes animate-fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(36px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes animate-pop {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    45% {
+      transform: scale(1.06);
+    }
+    72% {
+      transform: scale(0.98);
+    }
+  }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .bonifacio-contact:hover .bonifacio-visual {
+      animation: animate-pop 600ms ease-in-out;
+    }
+  }
+  .bonifacio-contact:focus-visible {
+    outline: 3px solid var(--color-lipstick-red);
+    outline-offset: 5px;
+    border-radius: 20px;
+  }
+  @media (max-width: 760px) {
+    .bonifacio-contact {
+      right: 10px;
+      width: 150px;
+    }
+    .bonifacio-greeting {
+      width: 112px;
+    }
+    .bonifacio-message {
+      padding: 9px 11px;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+    .bonifacio-message small {
+      font-size: 10px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bonifacio-wave,
+    .bonifacio-contact[data-entrance='entering'] {
+      animation: none;
+    }
+  }
+</style>

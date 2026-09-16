@@ -1,0 +1,560 @@
+---
+import { ArrowRight } from '@lucide/astro';
+import { projects } from '../data/projects';
+---
+
+<section
+  class="projects-section"
+  id="proyectos"
+  aria-labelledby="projects-title"
+>
+  <svg
+    class="project-paint project-paint--left"
+    viewBox="0 0 620 560"
+    aria-hidden="true"
+    preserveAspectRatio="none"
+  >
+    <defs>
+      <filter
+        id="paint-grain-left"
+        x="-10%"
+        y="-10%"
+        width="120%"
+        height="120%"
+      >
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency=".8"
+          numOctaves="3"
+          seed="12"
+          result="noise"
+        />
+        <feComposite
+          in="noise"
+          in2="SourceGraphic"
+          operator="in"
+          result="texture"
+        />
+        <feBlend in="SourceGraphic" in2="texture" mode="soft-light" />
+      </filter>
+    </defs>
+    <path
+      class="paint-main"
+      filter="url(#paint-grain-left)"
+      d="M-65 72C55 17 181-8 272 35c73 35 62 108 137 151 70 40 157 30 196 99 44 79-4 175-93 203-103 33-172-45-274-24-93 19-168 98-263 53-91-43-102-164-42-238 43-54 114-64 130-124 13-48-18-88-128-83Z"
+    />
+    <path
+      class="paint-highlight"
+      d="M-30 119c97-47 198-60 274-25 42 19 64 54 84 86-113-39-229-22-358 49Z"
+    />
+  </svg>
+  <svg
+    class="project-paint project-paint--right"
+    viewBox="0 0 700 500"
+    aria-hidden="true"
+    preserveAspectRatio="none"
+  >
+    <defs>
+      <filter
+        id="paint-grain-right"
+        x="-10%"
+        y="-10%"
+        width="120%"
+        height="120%"
+      >
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency=".65"
+          numOctaves="3"
+          seed="21"
+          result="noise"
+        />
+        <feComposite
+          in="noise"
+          in2="SourceGraphic"
+          operator="in"
+          result="texture"
+        />
+        <feBlend in="SourceGraphic" in2="texture" mode="soft-light" />
+      </filter>
+    </defs>
+    <path
+      class="paint-main"
+      filter="url(#paint-grain-right)"
+      d="M760 30c-112 14-193 56-280 65-99 10-180-28-268 21-70 39-76 99-140 139-48 30-91 30-113 79-30 68 34 137 106 140 91 4 144-73 235-83 111-12 188 74 290 39 72-25 100-87 126-151 31-75 82-152 44-249Z"
+    />
+    <path
+      class="paint-highlight"
+      d="M727 102c-117 18-183 62-278 66-76 3-133-19-203 4 118 25 237 62 414 22Z"
+    />
+  </svg>
+  <div class="projects-container">
+    <header class="projects-heading">
+      <p class="projects-eyebrow">Nuestro trabajo</p>
+      <h2 id="projects-title" class="animate-fade-in-up">
+        Ideas hechas <span>realidad.</span>
+      </h2>
+      <p class="projects-description">
+        Dise�amos landing pages, tiendas online y sistemas web que convierten
+        las ideas de nuestros clientes en experiencias digitales.
+      </p>
+    </header>
+    <div class="projects-grid">
+      {projects.map((project, index) => (
+        <article class="project-card" data-project-card data-order={index}>
+          <div class="window-dots" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div class="project-image">
+            <img
+              src={project.image}
+              alt={project.imageAlt}
+              width="960"
+              height="438"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+          <div class="project-info">
+            <span class="project-number" aria-hidden="true">
+              {String(index + 1).padStart(2, '0')}
+            </span>
+            <h3>{project.title}</h3>
+            <p class="project-description">{project.description}</p>
+            <a
+              class="project-link"
+              href={project.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Ver proyecto: ${project.title} (abre en una pestaña nueva)`}
+            >
+              Ver proyecto <ArrowRight size={20} aria-hidden="true" />
+            </a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .projects-section {
+    position: relative;
+    isolation: isolate;
+    background: var(--color-seashell);
+    padding: clamp(38px, 4vw, 60px) 5% clamp(100px, 10vw, 160px);
+    overflow: clip;
+    scroll-margin-top: 32px;
+  }
+  .project-paint {
+    position: absolute;
+    z-index: -1;
+    pointer-events: none;
+    overflow: visible;
+  }
+  .project-paint .paint-main {
+    fill: var(--color-rose-kiss);
+    opacity: 0.32;
+  }
+  .project-paint .paint-highlight {
+    fill: #fff;
+    opacity: 0.14;
+  }
+  .project-paint--left {
+    top: 7%;
+    left: -15%;
+    width: clamp(420px, 53vw, 760px);
+    height: clamp(390px, 48vw, 650px);
+    transform: rotate(-7deg);
+  }
+  .project-paint--right {
+    right: -19%;
+    bottom: -10%;
+    width: clamp(480px, 59vw, 850px);
+    height: clamp(350px, 43vw, 610px);
+    transform: rotate(5deg);
+  }
+  .project-paint--right .paint-main {
+    fill: var(--color-lipstick-red);
+    opacity: 0.15;
+  }
+  .project-paint--right .paint-highlight {
+    opacity: 0.18;
+  }
+  .projects-container {
+    position: relative;
+    z-index: 1;
+    max-width: 1080px;
+    margin-inline: auto;
+  }
+  .projects-heading {
+    text-align: center;
+    margin-bottom: clamp(64px, 7vw, 100px);
+  }
+  .projects-eyebrow {
+    margin: 0 0 16px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  h2 {
+    font-size: clamp(38px, 4.4vw, 68px);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    margin: 0;
+  }
+  h2 span {
+    color: var(--color-lipstick-red);
+  }
+  .projects-description {
+    max-width: 480px;
+    margin: 18px auto 0;
+    color: #777983;
+    font-size: clamp(14px, 1.2vw, 17px);
+    line-height: 1.6;
+  }
+  .animate-fade-in-up[data-reveal='waiting'] {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  .animate-fade-in-up[data-reveal='visible'] {
+    animation: projects-fade-in-up 1400ms cubic-bezier(0.22, 1, 0.36, 1)
+      backwards;
+  }
+  @keyframes projects-fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  .projects-grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(18px, 2vw, 26px);
+  }
+  .project-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 36px 13px 13px;
+    color: #07101f;
+    background: var(--color-rose-kiss);
+    border: 1px solid #f67da8;
+    border-radius: 12px;
+    box-shadow:
+      0 30px 60px #63203635,
+      0 9px 18px #63203622,
+      inset 0 1px #ffffff59;
+    transform-origin: 50% 12%;
+    transition: box-shadow 250ms ease;
+  }
+  .project-card:nth-child(2) {
+    color: white;
+    background: var(--color-lipstick-red);
+    border-color: #ec003c;
+    box-shadow:
+      0 30px 60px #8d002e42,
+      0 9px 18px #8d002e25,
+      inset 0 1px #ffffff59;
+  }
+  .project-card:nth-child(3) {
+    background: var(--color-muted-teal);
+    border-color: #8bbba0;
+    box-shadow:
+      0 30px 60px #315d4640,
+      0 9px 18px #315d4624,
+      inset 0 1px #ffffff70;
+  }
+  .project-card[data-state='arranged']:hover {
+    z-index: 5;
+    animation: project-swing 850ms ease-in-out both;
+    box-shadow:
+      0 38px 72px #4f26333b,
+      0 14px 24px #4f263329,
+      inset 0 1px #ffffff70;
+  }
+  @keyframes project-swing {
+    0%,
+    100% {
+      transform: rotate(0deg) translateY(0);
+    }
+    22% {
+      transform: rotate(2.4deg) translateY(-7px);
+    }
+    48% {
+      transform: rotate(-1.8deg) translateY(-7px);
+    }
+    72% {
+      transform: rotate(0.8deg) translateY(-5px);
+    }
+  }
+  .projects-grid[data-animated] .project-card[data-state='scattered'] {
+    transform: var(--scatter);
+  }
+  .window-dots {
+    position: absolute;
+    top: 13px;
+    left: 14px;
+    display: flex;
+    gap: 5px;
+  }
+  .window-dots span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 0 1px #ffffff4d;
+  }
+  .project-image {
+    position: relative;
+    aspect-ratio: 1.45;
+    overflow: hidden;
+    border: 1px solid #ffffff80;
+    border-radius: 7px;
+    background: white;
+    box-shadow: 0 10px 22px #29151b1f;
+  }
+  .project-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .project-info {
+    position: relative;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 17px 7px 7px;
+  }
+  .project-number {
+    position: absolute;
+    top: 22px;
+    right: 7px;
+    color: currentColor;
+    opacity: 0.65;
+    font-size: 10px;
+  }
+  h3 {
+    margin: 0 30px 10px 0;
+    min-height: 2.3em;
+    font-size: clamp(23px, 2vw, 30px);
+    line-height: 1.15;
+  }
+  .project-description {
+    margin: 0 0 20px;
+    color: currentColor;
+    opacity: 0.76;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+  .project-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    align-self: flex-start;
+    gap: 24px;
+    min-height: 42px;
+    margin-top: auto;
+    padding: 8px 16px;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    background: #ffffff33;
+    color: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    transition:
+      background-color 180ms,
+      color 180ms,
+      transform 180ms;
+  }
+  .project-link:hover {
+    background: #fff;
+    color: var(--color-lipstick-red);
+    transform: translateY(-2px);
+  }
+  .project-link svg {
+    flex-shrink: 0;
+  }
+  @media (max-width: 1000px) and (min-width: 641px) {
+    .projects-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 36px;
+    }
+  }
+  @media (max-width: 640px) {
+    .projects-section {
+      padding-inline: 28px;
+    }
+    .projects-heading {
+      margin-bottom: 58px;
+    }
+    .projects-grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 42px;
+      max-width: 340px;
+      margin-inline: auto;
+    }
+    .project-paint--left {
+      top: 4%;
+      left: -65%;
+      width: 620px;
+      height: 560px;
+      opacity: 0.8;
+    }
+    .project-paint--right {
+      right: -85%;
+      bottom: 4%;
+      width: 700px;
+      height: 500px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .project-card {
+      transform: none !important;
+    }
+    .project-card:hover {
+      animation: none !important;
+    }
+    .animate-fade-in-up {
+      animation: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
+</style>
+
+<script>
+  const grid = document.querySelector<HTMLElement>('.projects-grid');
+  const cards = [
+    ...document.querySelectorAll<HTMLElement>('[data-project-card]'),
+  ];
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const title = document.querySelector<HTMLElement>('#projects-title');
+  if (title && !reduced.matches && 'IntersectionObserver' in window) {
+    title.dataset.reveal = 'waiting';
+    const revealTitle = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          title.dataset.reveal = 'visible';
+          revealTitle.disconnect();
+        }
+      },
+      { threshold: 0.25 },
+    );
+    revealTitle.observe(title);
+    reduced.addEventListener('change', () => {
+      if (reduced.matches) {
+        delete title.dataset.reveal;
+        revealTitle.disconnect();
+      }
+    });
+  }
+  if (
+    grid &&
+    cards.length &&
+    !reduced.matches &&
+    'IntersectionObserver' in window &&
+    'animate' in Element.prototype
+  ) {
+    let started = false;
+    let stopped = false;
+    const animations: Animation[] = [];
+
+    const stack = () => {
+      cards.forEach((card, index) => {
+        const x =
+          (grid.clientWidth - card.offsetWidth) / 2 -
+          card.offsetLeft +
+          (index - 1) * 15;
+        const y = 18 + index * 14 - card.offsetTop;
+        const angle = [-12, 8, -5][index % 3];
+        card.style.setProperty(
+          '--scatter',
+          `translate(${x}px, ${y}px) rotate(${angle}deg) scale(.94)`,
+        );
+        card.style.zIndex = String(cards.length - index);
+        card.dataset.state = 'scattered';
+      });
+      grid.dataset.animated = '';
+    };
+
+    const finish = () => {
+      stopped = true;
+      observer.disconnect();
+      animations.forEach((animation) => animation.cancel());
+      cards.forEach((card) => {
+        card.dataset.state = 'arranged';
+        card.style.removeProperty('z-index');
+      });
+      window.removeEventListener('resize', resize);
+    };
+    const resize = () => {
+      if (started) finish();
+      else stack();
+    };
+
+    const arrange = () => {
+      if (started || stopped) return;
+      started = true;
+      observer.disconnect();
+      for (const [index, card] of cards.entries()) {
+        if (stopped) break;
+        const from = getComputedStyle(card).transform;
+        const animation = card.animate(
+          [
+            { transform: from, offset: 0 },
+            {
+              transform: 'translate(0, -4px) rotate(.5deg) scale(1.01)',
+              offset: 0.84,
+            },
+            { transform: 'none', offset: 1 },
+          ],
+          {
+            duration: 850,
+            delay: index * 180,
+            easing: 'cubic-bezier(.22, .7, .3, 1)',
+            fill: 'both',
+          },
+        );
+        animations.push(animation);
+        // Overlap the movements in left-to-right order instead of waiting for each to finish.
+        animation.finished
+          .then(() => {
+            card.dataset.state = 'arranged';
+            animation.cancel();
+            card.style.removeProperty('z-index');
+          })
+          .catch(() => {
+            /* Focus, resize and reduced motion settle the entire group. */
+          });
+      }
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) void arrange();
+      },
+      { threshold: 0.35 },
+    );
+    stack();
+    observer.observe(cards[0]);
+    window.addEventListener('resize', resize);
+    document.fonts.ready.then(() => {
+      if (!started && !stopped) stack();
+    });
+    reduced.addEventListener('change', () => {
+      if (reduced.matches) finish();
+    });
+    grid.addEventListener('focusin', finish);
+  }
+</script>
