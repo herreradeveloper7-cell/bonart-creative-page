@@ -37,17 +37,20 @@ export function initCtaReveal() {
     video.pause();
     clearInterval(watchdog);
     observer.disconnect();
+    preloader.disconnect();
     resize.disconnect();
     reduced.removeEventListener('change', finish);
   };
   const resize = new ResizeObserver(measure);
   const render = (time: number) => {
     const sourceX = brushAt(time);
-    const runway = BONIFACIO.characterWidth * scale + 32;
-    const progress =
-      (sourceX - BONIFACIO.pathStartX) /
-      (BONIFACIO.pathEndX - BONIFACIO.pathStartX);
-    const x = bounds.width + runway - progress * (bounds.width + runway + 32);
+    const startX = brushAt(BONIFACIO.startTime);
+    const endX = brushAt(BONIFACIO.endTime);
+    const progress = Math.max(
+      0,
+      Math.min(1, (sourceX - startX) / (endX - startX)),
+    );
+    const x = bounds.width - progress * (bounds.width + 32);
     video.style.transform = `translate(${x + sourceX * scale}px, ${brushY - BONIFACIO.sourceBrushY * scale}px) scale(${-scale}, ${scale})`;
     video.style.clipPath = `inset(0 0 0 ${Math.max(0, sourceX - 1)}px)`;
     copies.forEach((copy, index) => {
@@ -72,11 +75,11 @@ export function initCtaReveal() {
       progressAt = performance.now();
       mediaTime = metadata.mediaTime;
     }
-    if (mediaTime >= BONIFACIO.endTime) {
+    if (mediaTime + BONIFACIO.startTime >= BONIFACIO.endTime) {
       finish();
       return;
     }
-    render(mediaTime);
+    render(mediaTime + BONIFACIO.startTime);
     section.dataset.reveal = 'playing';
     frame = video.requestVideoFrameCallback(tick);
   };
@@ -95,20 +98,21 @@ export function initCtaReveal() {
       video.muted = true;
       video.playbackRate = BONIFACIO.playbackRate;
       const loaded = new Promise<void>((resolve, reject) => {
+        if (video.readyState >= 2) {
+          resolve();
+          return;
+        }
         video.addEventListener('loadeddata', () => resolve(), { once: true });
         video.addEventListener('error', reject, { once: true });
       });
-      source.src = source.dataset.src!;
-      video.load();
-      await Promise.all([loaded, document.fonts.ready]);
+      prepare();
+      await Promise.all([
+        loaded,
+        document.fonts.load('700 16px Poppins'),
+        document.fonts.load('600 16px Poppins'),
+      ]);
       if (done) return;
       video.playbackRate = BONIFACIO.playbackRate;
-      const sought = new Promise<void>((resolve) =>
-        video.addEventListener('seeked', () => resolve(), { once: true }),
-      );
-      video.currentTime = BONIFACIO.startTime;
-      await sought;
-      if (done) return;
       const probe = document.createElement('canvas');
       probe.width = probe.height = 1;
       const context = probe.getContext('2d');
@@ -124,22 +128,36 @@ export function initCtaReveal() {
       measure();
       resize.observe(section);
       render(BONIFACIO.startTime);
+      section.dataset.reveal = 'playing';
+      progressAt = performance.now();
       frame = video.requestVideoFrameCallback(tick);
       await video.play();
     } catch {
       finish();
     }
   };
+  // Warm the shared, cached hero asset before the section enters the viewport.
+  const prepare = () => {
+    if (done || reduced.matches || source.getAttribute('src')) return;
+    video.preload = 'auto';
+    source.src = source.dataset.src!;
+    video.load();
+  };
+  const preloader = new IntersectionObserver(
+    (entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) {
+        prepare();
+        preloader.disconnect();
+      }
+    },
+    { rootMargin: '600px 0px' },
+  );
+  preloader.observe(section);
   const observer = new IntersectionObserver(
     (entries) => {
-      if (
-        entries.some(
-          (entry) => entry.isIntersecting && entry.intersectionRatio >= 0.25,
-        )
-      )
-        void start();
+      if (entries.some((entry) => entry.isIntersecting)) void start();
     },
-    { threshold: 0.25 },
+    { threshold: 0 },
   );
   reduced.addEventListener('change', finish);
   video.addEventListener('error', finish);
