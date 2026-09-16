@@ -99,11 +99,15 @@ export function initHeroReveal() {
 
   const render = (time: number) => {
     const sourceX = brushAt(time);
-    const runway = BONIFACIO.characterWidth * scale + 32;
-    const progress =
-      (sourceX - BONIFACIO.pathStartX) /
-      (BONIFACIO.pathEndX - BONIFACIO.pathStartX);
-    const screenX = -runway + progress * (viewportWidth + runway + 32);
+    // Start with the brush at the visible left edge; the character is ahead of it.
+    // Normalize against the actual trimmed frames, with no offscreen lead-in.
+    const startX = brushAt(BONIFACIO.startTime);
+    const endX = brushAt(BONIFACIO.endTime);
+    const progress = Math.max(
+      0,
+      Math.min(1, (sourceX - startX) / (endX - startX)),
+    );
+    const screenX = progress * (viewportWidth + 32);
     const localX = screenX - bounds.left;
 
     video.style.transform = `translate(${localX - sourceX * scale}px, ${brushY - BONIFACIO.sourceBrushY * scale}px) scale(${scale})`;
@@ -195,6 +199,8 @@ export function initHeroReveal() {
       observer.observe(stage);
       window.addEventListener('resize', measure);
       render(BONIFACIO.startTime);
+      root.dataset.bonifacio = 'playing';
+      lastFrameAt = performance.now();
       frame = video.requestVideoFrameCallback(onFrame);
       await video.play();
     } catch {
