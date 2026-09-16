@@ -42,6 +42,18 @@ import '../styles/hero-reveal.css';
         >
           <source data-src="/media/bonifacio-reveal.webm" type="video/webm" />
         </video>
+        <script is:inline>
+          // Start downloading during HTML parsing, before the animation module runs.
+          if (document.documentElement.dataset.bonifacio === 'pending') {
+            const video = document.querySelector('.bonifacio-video');
+            const source = video?.querySelector('source');
+            if (video && source) {
+              video.preload = 'auto';
+              source.src = source.dataset.src;
+              video.load();
+            }
+          }
+        </script>
       </div>
     </div>
     <div class="hero-actions animate-bounce-fade-in">

@@ -146,13 +146,23 @@ export function initHeroReveal() {
       video.muted = true;
       video.defaultPlaybackRate = heroPlaybackRate;
       video.playbackRate = heroPlaybackRate;
-      source.src = source.dataset.src!;
+      const fontsReady = Promise.all([
+        document.fonts.load('700 16px Poppins'),
+        document.fonts.load('600 16px Poppins'),
+      ]);
       const loaded = new Promise<void>((resolve, reject) => {
+        if (video.readyState >= 2) {
+          resolve();
+          return;
+        }
         video.addEventListener('loadeddata', () => resolve(), { once: true });
         video.addEventListener('error', reject, { once: true });
       });
-      video.load();
-      await Promise.all([loaded, document.fonts.ready]);
+      if (!source.getAttribute('src')) {
+        source.src = source.dataset.src!;
+        video.load();
+      }
+      await loaded;
       if (done || root.dataset.bonifacio !== 'pending') {
         finish();
         return;
@@ -163,7 +173,7 @@ export function initHeroReveal() {
         video.addEventListener('seeked', () => resolve(), { once: true }),
       );
       video.currentTime = BONIFACIO.startTime;
-      await sought;
+      await Promise.all([sought, fontsReady]);
       if (done || root.dataset.bonifacio !== 'pending') {
         finish();
         return;
