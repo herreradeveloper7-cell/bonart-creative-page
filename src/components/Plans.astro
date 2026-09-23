@@ -250,6 +250,63 @@ const contact = (service: string) =>
       animation.pause();
       animations.push(animation);
     });
+    const audit = section.querySelector<HTMLElement>('.plan-audit');
+    const free = audit?.querySelector<HTMLElement>('.audit-price strong');
+    let sequenceDone = false;
+    let auditVisible = false;
+    let auditStarted = false;
+    let auditDone = false;
+    const auditAnimation = audit?.animate(
+      [
+        { opacity: 0, transform: 'translateX(-48px)' },
+        { opacity: 1, transform: 'translateX(0)' },
+      ],
+      { duration: 650, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'both' },
+    );
+    auditAnimation?.pause();
+    const pop = free?.animate(
+      [
+        { transform: 'scale(1)', offset: 0 },
+        { transform: 'scale(1.08)', offset: 0.18 },
+        { transform: 'scale(.98)', offset: 0.32 },
+        { transform: 'scale(1)', offset: 0.46 },
+        { transform: 'scale(1)', offset: 1 },
+      ],
+      { duration: 2200, iterations: Infinity, easing: 'ease-in-out' },
+    );
+    pop?.pause();
+    const syncAudit = () => {
+      if (reduced.matches) return;
+      if (auditVisible && sequenceDone && !auditStarted && auditAnimation) {
+        auditStarted = true;
+        auditAnimation.play();
+        auditAnimation.finished
+          .then(() => {
+            auditDone = true;
+            auditAnimation.cancel();
+            syncAudit();
+          })
+          .catch(() => {});
+      }
+      if (auditDone && auditVisible && !document.hidden) pop?.play();
+      else pop?.pause();
+    };
+    const auditObserver = new IntersectionObserver(
+      ([entry]) => {
+        auditVisible = entry.isIntersecting && entry.intersectionRatio >= 0.2;
+        syncAudit();
+      },
+      { threshold: [0, 0.2] },
+    );
+    if (audit) auditObserver.observe(audit);
+    document.addEventListener('visibilitychange', syncAudit);
+    // Wait for the heading, crayon and all three cards, independently of scrolling.
+    Promise.all(animations.map((animation) => animation.finished))
+      .then(() => {
+        sequenceDone = true;
+        syncAudit();
+      })
+      .catch(() => {});
     const observer = new IntersectionObserver(
       (entries) => {
         if (started || !entries.some((entry) => entry.isIntersecting)) return;
@@ -266,12 +323,21 @@ const contact = (service: string) =>
     reduced.addEventListener('change', () => {
       if (reduced.matches) {
         observer.disconnect();
+        auditObserver.disconnect();
+        auditAnimation?.cancel();
+        pop?.cancel();
+        document.removeEventListener('visibilitychange', syncAudit);
         animations.forEach((animation) => animation.cancel());
       }
     });
   }
 </script>
 <style>
+  .audit-price strong {
+    display: inline-block;
+    transform-origin: center;
+  }
+
   .plan-card {
     transform-origin: center bottom;
     transition:
