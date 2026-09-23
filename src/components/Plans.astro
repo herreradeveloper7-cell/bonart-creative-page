@@ -14,7 +14,7 @@ const plans = [
     title: 'Presencia digital',
     description:
       'Haz que tu negocio tenga una presencia profesional en internet.',
-    price: '549.000',
+    price: '500.000',
     icon: Sprout,
     action: 'Quiero empezar',
     features: [
@@ -24,19 +24,18 @@ const plans = [
       'WhatsApp o formulario de contacto',
       'SEO básico',
       'Dominio + SSL (configuración)',
-      'Publicación en Cloudflare',
     ],
   },
   {
     name: 'Growth',
     title: 'Captación de clientes',
     description: 'Convierte visitas en oportunidades reales de venta.',
-    price: '1.190.000',
+    price: '1.000.000',
     icon: ChartNoAxesCombined,
     action: 'Quiero más clientes',
     features: [
       'Todo lo del plan Start',
-      'CRM HubSpot (u otro)',
+      'CRM',
       'Formularios de leads',
       'WhatsApp',
       'Analytics y reportes',
@@ -53,11 +52,11 @@ const plans = [
     icon: ShoppingBag,
     action: 'Quiero vender online',
     features: [
-      'Tienda en Shopify (Liquid)',
+      'Tienda en Shopify',
       'Catálogo de productos',
       'Pagos online',
       'WhatsApp y chat',
-      'Integración con CRM (HubSpot)',
+      'Integración con CRM',
       'Analytics + Meta Pixel',
       'Optimización SEO',
       'Capacitación y soporte inicial',
@@ -158,7 +157,7 @@ const contact = (service: string) =>
       <div class="audit-price">
         <h3>Auditoría Bonart</h3>
         <p>
-          desde <strong>$149.000</strong> <span>COP</span>
+          <strong>100% gratis</strong>
         </p>
       </div>
       <a
@@ -168,12 +167,78 @@ const contact = (service: string) =>
         rel="noopener noreferrer"
       >
         <MessageCircle size={20} aria-hidden="true" />
-        Analizar mi negocio
+        Quiero mi auditor�a gratis
         <ArrowRight size={18} aria-hidden="true" />
       </a>
     </aside>
   </div>
 </section>
+<script>
+  const section = document.querySelector<HTMLElement>('.plans-section');
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  if (section && !reduced.matches && 'IntersectionObserver' in window) {
+    const headings = [
+      ...section.querySelectorAll<HTMLElement>('.plans-heading > *'),
+    ];
+    const cards = [...section.querySelectorAll<HTMLElement>('.plan-card')];
+    const animations: Animation[] = [];
+    let started = false;
+    const headingDuration = 600;
+    const headingStep = 180;
+    const cardsStart = headingDuration + (headings.length - 1) * headingStep;
+    headings.forEach((element, index) => {
+      const animation = element.animate(
+        [
+          { opacity: 0, transform: 'translateX(-32px)' },
+          { opacity: 1, transform: 'translateX(0)' },
+        ],
+        {
+          duration: headingDuration,
+          delay: index * headingStep,
+          easing: 'cubic-bezier(.22,1,.36,1)',
+          fill: 'both',
+        },
+      );
+      animation.pause();
+      animations.push(animation);
+    });
+    cards.forEach((element, index) => {
+      const animation = element.animate(
+        [
+          { opacity: 0, filter: 'blur(10px)', transform: 'translateY(18px)' },
+          { opacity: 1, filter: 'blur(0px)', transform: 'translateY(0)' },
+        ],
+        {
+          duration: 650,
+          delay: cardsStart + index * 200,
+          easing: 'cubic-bezier(.22,1,.36,1)',
+          fill: 'both',
+        },
+      );
+      animation.pause();
+      animations.push(animation);
+    });
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (started || !entries.some((entry) => entry.isIntersecting)) return;
+        started = true;
+        animations.forEach((animation) => {
+          animation.play();
+          animation.finished.then(() => animation.cancel()).catch(() => {});
+        });
+        observer.disconnect();
+      },
+      { threshold: 0, rootMargin: '0px 0px -10% 0px' },
+    );
+    observer.observe(section);
+    reduced.addEventListener('change', () => {
+      if (reduced.matches) {
+        observer.disconnect();
+        animations.forEach((animation) => animation.cancel());
+      }
+    });
+  }
+</script>
 <style>
   .plans-section {
     padding: clamp(64px, 7vw, 100px) 7%;
