@@ -1,0 +1,466 @@
+---
+import {
+  Sprout,
+  ChartNoAxesCombined,
+  ShoppingBag,
+  Search,
+  Check,
+  ArrowRight,
+  MessageCircle,
+} from '@lucide/astro';
+const plans = [
+  {
+    name: 'Start',
+    title: 'Presencia digital',
+    description:
+      'Haz que tu negocio tenga una presencia profesional en internet.',
+    price: '549.000',
+    icon: Sprout,
+    action: 'Quiero empezar',
+    features: [
+      'Diseño personalizado',
+      'Hasta 5 secciones',
+      'Adaptada a móviles (responsive)',
+      'WhatsApp o formulario de contacto',
+      'SEO básico',
+      'Dominio + SSL (configuración)',
+      'Publicación en Cloudflare',
+    ],
+  },
+  {
+    name: 'Growth',
+    title: 'Captación de clientes',
+    description: 'Convierte visitas en oportunidades reales de venta.',
+    price: '1.190.000',
+    icon: ChartNoAxesCombined,
+    action: 'Quiero más clientes',
+    features: [
+      'Todo lo del plan Start',
+      'CRM HubSpot (u otro)',
+      'Formularios de leads',
+      'WhatsApp',
+      'Analytics y reportes',
+      'Meta Pixel (Facebook/Instagram)',
+      'Automatizaciones iniciales',
+      'Capacitación para tu equipo',
+    ],
+  },
+  {
+    name: 'Commerce',
+    title: 'Tienda online',
+    description: 'Vende tus productos online con una tienda profesional.',
+    price: '1.390.000',
+    icon: ShoppingBag,
+    action: 'Quiero vender online',
+    features: [
+      'Tienda en Shopify (Liquid)',
+      'Catálogo de productos',
+      'Pagos online',
+      'WhatsApp y chat',
+      'Integración con CRM (HubSpot)',
+      'Analytics + Meta Pixel',
+      'Optimización SEO',
+      'Capacitación y soporte inicial',
+    ],
+  },
+];
+const contact = (service: string) =>
+  `https://wa.me/573215663191?text=${encodeURIComponent(`Hola BonArt, me interesa ${service}. Quisiera más información.`)}`;
+---
+
+<section class="plans-section" id="planes" aria-labelledby="plans-title">
+  <div class="plans-container">
+    <header class="plans-heading">
+      <p class="plans-eyebrow">Soluciones para tu negocio</p>
+      <h2 id="plans-title">
+        No necesitas solo una página.
+        <br />
+        <span>Necesitas una solución.</span>
+        <svg
+          class="plans-spark"
+          viewBox="0 0 48 64"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path
+            d="M9 24 28 4M16 35 41 27M14 46 31 57"
+            stroke="currentColor"
+            stroke-width="5"
+            stroke-linecap="round"
+          />
+        </svg>
+      </h2>
+      <p class="plans-intro">
+        Elige el plan que mejor se adapta a tu negocio y nosotros nos encargamos
+        de la tecnología.
+      </p>
+    </header>
+    <div class="plans-grid">
+      {plans.map(
+        ({ name, title, description, price, icon: Icon, action, features }) => (
+          <article
+            class:list={['plan-card', { 'plan-featured': name === 'Growth' }]}
+          >
+            {name === 'Growth' && <span class="plan-badge">Más elegido</span>}
+            <div class="plan-heading">
+              <span class="plan-icon">
+                <Icon size={30} stroke-width={1.8} aria-hidden="true" />
+              </span>
+              <div>
+                <p class="plan-name">{name}</p>
+                <h3>{title}</h3>
+              </div>
+            </div>
+            <p class="plan-description">{description}</p>
+            <p class="plan-price">
+              <span class="price-from">Desde</span>
+              <strong>${price}</strong>
+              <span class="currency">COP</span>
+            </p>
+            <ul>
+              {features.map((feature) => (
+                <li>
+                  <span class="plan-check">
+                    <Check size={11} stroke-width={3} aria-hidden="true" />
+                  </span>
+                  {feature}
+                </li>
+              ))}
+            </ul>
+            <a
+              class="plan-button"
+              href={contact(`el plan ${name}`)}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`${action}: consultar plan ${name} por WhatsApp`}
+            >
+              <MessageCircle size={20} aria-hidden="true" />
+              {action}
+              <ArrowRight size={18} aria-hidden="true" />
+            </a>
+          </article>
+        ),
+      )}
+    </div>
+    <aside class="plan-audit" aria-labelledby="audit-title">
+      <div class="audit-copy">
+        <span class="plan-icon">
+          <Search size={30} aria-hidden="true" />
+        </span>
+        <div>
+          <h3 id="audit-title">¿No sabes cuál necesita tu negocio?</h3>
+          <p>
+            Analizamos tu presencia digital, proceso comercial y oportunidades
+            de mejora.
+          </p>
+        </div>
+      </div>
+      <div class="audit-price">
+        <h3>Auditoría Bonart</h3>
+        <p>
+          desde <strong>$149.000</strong> <span>COP</span>
+        </p>
+      </div>
+      <a
+        class="audit-button"
+        href={contact('la Auditoría Bonart')}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <MessageCircle size={20} aria-hidden="true" />
+        Analizar mi negocio
+        <ArrowRight size={18} aria-hidden="true" />
+      </a>
+    </aside>
+  </div>
+</section>
+<style>
+  .plans-section {
+    padding: clamp(64px, 7vw, 100px) 7%;
+    scroll-margin-top: 110px;
+  }
+  .plans-container {
+    max-width: 1160px;
+    margin-inline: auto;
+  }
+  .plans-heading {
+    margin-bottom: 30px;
+  }
+  .plans-eyebrow {
+    color: var(--color-lipstick-red);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin: 0 0 12px;
+  }
+  .plans-heading h2 {
+    position: relative;
+    width: fit-content;
+    max-width: 100%;
+    margin: 0;
+    font-size: clamp(29px, 3.55vw, 51px);
+    line-height: 1.08;
+    letter-spacing: -0.055em;
+  }
+  .plans-heading h2 span {
+    color: var(--color-lipstick-red);
+  }
+  .plans-spark {
+    position: absolute;
+    width: 40px;
+    height: 54px;
+    right: -45px;
+    top: -15px;
+    color: var(--color-rose-kiss);
+  }
+  .plans-intro {
+    margin: 16px 0 0;
+    color: #555c69;
+    font-size: 15px;
+  }
+  .plans-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+  }
+  .plan-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 28px 22px 22px;
+    border: 1px solid #fa609626;
+    border-radius: 22px;
+    background: #fffcfa;
+    box-shadow: 0 12px 32px #6b244008;
+  }
+  .plan-featured {
+    border-color: var(--color-rose-kiss);
+    background: linear-gradient(155deg, #fff9fb, #ffedf3);
+    box-shadow: 0 14px 40px #f9004010;
+  }
+  .plan-badge {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    border-radius: 20px;
+    padding: 4px 9px;
+    background: var(--color-lipstick-red);
+    color: white;
+    text-transform: uppercase;
+    font-size: 9px;
+    font-weight: 600;
+  }
+  .plan-heading {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 12px;
+  }
+  .plan-icon {
+    display: grid;
+    place-items: center;
+    width: 54px;
+    height: 54px;
+    flex: 0 0 54px;
+    border-radius: 50%;
+    color: var(--color-lipstick-red);
+    background: #fa609619;
+  }
+  .plan-name {
+    width: fit-content;
+    margin: 0 0 8px;
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 12px;
+  }
+  .plan-name::after {
+    content: '';
+    display: block;
+    width: 27px;
+    height: 2px;
+    background: var(--color-rose-kiss);
+    margin-top: 5px;
+  }
+  .plan-heading h3 {
+    font-size: 17px;
+    letter-spacing: -0.035em;
+    margin: 0;
+  }
+  .plan-description {
+    font-size: 13px;
+    line-height: 1.55;
+    color: #444e60;
+    min-height: 3.1em;
+    margin: 18px 0;
+  }
+  .plan-price {
+    border-top: 1px solid #fa609626;
+    padding-top: 15px;
+    margin: 0 0 18px;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+  .price-from {
+    display: block;
+    font-size: 12px;
+    margin-bottom: 4px;
+  }
+  .plan-price strong {
+    font-size: clamp(28px, 2.65vw, 38px);
+    letter-spacing: -0.055em;
+  }
+  .currency {
+    margin-left: 6px;
+    color: var(--color-lipstick-red);
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .plan-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 25px;
+    display: grid;
+    gap: 8px;
+  }
+  .plan-card li {
+    display: flex;
+    align-items: start;
+    gap: 9px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #374154;
+  }
+  .plan-check {
+    display: grid;
+    place-items: center;
+    flex: 0 0 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--color-lipstick-red);
+    color: white;
+    margin-top: 2px;
+  }
+  .plan-button,
+  .audit-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    border-radius: 30px;
+    padding: 13px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    transition:
+      transform 180ms,
+      box-shadow 180ms;
+  }
+  .plan-button {
+    margin-top: auto;
+    color: white;
+    background: var(--color-lipstick-red);
+  }
+  .plan-button:hover,
+  .audit-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px #f9004020;
+  }
+  .plan-audit {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr auto;
+    align-items: center;
+    gap: 25px;
+    margin-top: 24px;
+    padding: 24px;
+    border-radius: 20px;
+    border: 1px solid #fa609640;
+    background: #fff0f5;
+  }
+  .audit-copy {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+  }
+  .plan-audit h3 {
+    margin: 0 0 6px;
+    font-size: 14px;
+    letter-spacing: -0.025em;
+  }
+  .audit-copy p {
+    margin: 0;
+    color: #555c69;
+    font-size: 12px;
+  }
+  .audit-price {
+    border-left: 1px solid #fa609640;
+    padding-left: 25px;
+  }
+  .audit-price p {
+    margin: 0;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+  .audit-price strong {
+    color: var(--color-lipstick-red);
+    font-size: 28px;
+    letter-spacing: -0.04em;
+  }
+  .audit-price p span {
+    color: var(--color-lipstick-red);
+  }
+  .audit-button {
+    border: 1px solid var(--color-lipstick-red);
+  }
+  .audit-button :global(svg:first-child) {
+    color: var(--color-lipstick-red);
+  }
+  @media (max-width: 1050px) {
+    .plans-grid {
+      gap: 12px;
+    }
+    .plan-card {
+      padding-inline: 16px;
+    }
+    .plan-audit {
+      grid-template-columns: 1fr 1fr;
+    }
+    .audit-button {
+      grid-column: 1 / -1;
+      justify-self: center;
+    }
+    .plans-spark {
+      display: none;
+    }
+  }
+  @media (max-width: 760px) {
+    .plans-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    .plan-card {
+      padding: 28px 24px 24px;
+    }
+    .plan-price strong {
+      font-size: 36px;
+    }
+    .plan-audit {
+      grid-template-columns: 1fr;
+      gap: 20px;
+      padding: 22px;
+    }
+    .audit-price {
+      border-left: 0;
+      border-top: 1px solid #fa609640;
+      padding: 18px 0 0;
+    }
+    .audit-button {
+      justify-self: stretch;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .plan-button,
+    .audit-button {
+      transition: none;
+    }
+  }
+</style>
