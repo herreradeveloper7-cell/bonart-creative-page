@@ -167,7 +167,7 @@ const contact = (service: string) =>
         rel="noopener noreferrer"
       >
         <MessageCircle size={20} aria-hidden="true" />
-        Quiero mi auditor�a gratis
+        Quiero mi auditoría gratis
         <ArrowRight size={18} aria-hidden="true" />
       </a>
     </aside>
@@ -202,6 +202,38 @@ const contact = (service: string) =>
       animation.pause();
       animations.push(animation);
     });
+    const titleIndex = headings.findIndex(
+      (element) => element.id === 'plans-title',
+    );
+    section
+      .querySelectorAll<SVGPathElement>('.plans-spark path')
+      .forEach((path) => {
+        const length = path.getTotalLength();
+        const animation = path.animate(
+          [
+            {
+              strokeDasharray: `${length}`,
+              strokeDashoffset: `${length}`,
+              opacity: 0,
+            },
+            {
+              strokeDasharray: `${length}`,
+              strokeDashoffset: `${length}`,
+              opacity: 1,
+              offset: 0.01,
+            },
+            { strokeDasharray: `${length}`, strokeDashoffset: '0', opacity: 1 },
+          ],
+          {
+            duration: 650,
+            delay: headingDuration + Math.max(0, titleIndex) * headingStep,
+            easing: 'ease-in-out',
+            fill: 'both',
+          },
+        );
+        animation.pause();
+        animations.push(animation);
+      });
     cards.forEach((element, index) => {
       const animation = element.animate(
         [
@@ -240,6 +272,53 @@ const contact = (service: string) =>
   }
 </script>
 <style>
+  .plan-card {
+    transform-origin: center bottom;
+    transition:
+      border-color 220ms,
+      box-shadow 220ms;
+  }
+  .plan-card:focus-within {
+    border-color: var(--color-rose-kiss);
+    box-shadow:
+      0 0 0 1px #fa609650,
+      0 0 24px #fa609640,
+      0 18px 38px #f900401a;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .plan-card:hover {
+      z-index: 1;
+      border-color: var(--color-rose-kiss);
+      box-shadow:
+        0 0 0 1px #fa609660,
+        0 0 26px #fa609650,
+        0 20px 40px #f9004020;
+      animation: plan-sway 1800ms ease-in-out infinite;
+    }
+  }
+  @keyframes plan-sway {
+    0%,
+    100% {
+      transform: translateY(0) rotate(0);
+    }
+    25% {
+      transform: translateY(-5px) rotate(-0.8deg);
+    }
+    50% {
+      transform: translateY(-7px) rotate(0);
+    }
+    75% {
+      transform: translateY(-5px) rotate(0.8deg);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .plan-card,
+    .plan-card:hover {
+      animation: none;
+      transition: none;
+    }
+  }
+
   .plans-section {
     padding: clamp(64px, 7vw, 100px) 7%;
     scroll-margin-top: 110px;
