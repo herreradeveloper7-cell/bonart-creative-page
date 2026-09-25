@@ -1,0 +1,35 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ContactForm from '../components/ContactForm.astro';
+---
+
+<Layout>
+  <main>
+    <a class="back" href="/">
+      ← Volver a BonArt
+    </a>
+    <ContactForm />
+  </main>
+</Layout>
+<style>
+  main {
+    max-width: 690px;
+    margin: 40px auto;
+    padding: 24px;
+  }
+  .back {
+    display: inline-block;
+    margin-bottom: 32px;
+    font-weight: 600;
+  }
+  main :global(.contact-card) {
+    border: 1px solid var(--color-rose-kiss);
+    box-shadow: 8px 8px 0 var(--color-muted-teal);
+  }
+  @media (max-width: 480px) {
+    main {
+      padding: 12px;
+      margin: 16px auto;
+    }
+  }
+</style>

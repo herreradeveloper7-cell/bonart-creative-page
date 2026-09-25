@@ -1,0 +1,54 @@
+---
+import ContactForm from './ContactForm.astro';
+---
+
+<dialog data-contact-dialog aria-labelledby="contact-heading">
+  <button
+    class="close"
+    type="button"
+    data-close-contact
+    aria-label="Cerrar formulario"
+  >
+    ×
+  </button>
+  <ContactForm />
+</dialog>
+<style>
+  dialog {
+    width: min(640px, calc(100% - 24px));
+    max-height: calc(100dvh - 32px);
+    padding: 0;
+    border: 1px solid var(--color-rose-kiss);
+    border-radius: 26px;
+    background: var(--color-seashell);
+    box-shadow: 0 24px 100px #07101f44;
+    overscroll-behavior: contain;
+  }
+  dialog::backdrop {
+    background: #07101fa8;
+    backdrop-filter: blur(5px);
+  }
+  .close {
+    position: absolute;
+    z-index: 2;
+    top: 14px;
+    right: 14px;
+    display: block;
+    border: 0;
+    border-radius: 50%;
+    background: var(--color-seashell);
+    color: #07101f;
+    width: 44px;
+    height: 44px;
+    font-size: 28px;
+  }
+  @media (max-width: 480px) {
+    dialog {
+      border-radius: 22px;
+    }
+    .close {
+      top: 10px;
+      right: 10px;
+    }
+  }
+</style>

@@ -64,7 +64,7 @@ const plans = [
   },
 ];
 const contact = (service: string) =>
-  `https://wa.me/573215663191?text=${encodeURIComponent(`Hola BonArt, me interesa ${service}. Quisiera más información.`)}`;
+  `/contacto?servicio=${encodeURIComponent(service)}`;
 ---
 
 <section class="plans-section" id="planes" aria-labelledby="plans-title">
@@ -128,9 +128,9 @@ const contact = (service: string) =>
             </ul>
             <a
               class="plan-button"
+              data-contact
               href={contact(`el plan ${name}`)}
-              target="_blank"
-              rel="noopener noreferrer"
+
               aria-label={`${action}: consultar plan ${name} por WhatsApp`}
             >
               <MessageCircle size={20} aria-hidden="true" />
@@ -162,9 +162,8 @@ const contact = (service: string) =>
       </div>
       <a
         class="audit-button"
+        data-contact
         href={contact('la Auditoría Bonart')}
-        target="_blank"
-        rel="noopener noreferrer"
       >
         <MessageCircle size={20} aria-hidden="true" />
         Quiero mi auditoría gratis

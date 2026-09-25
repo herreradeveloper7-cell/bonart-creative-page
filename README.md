@@ -62,3 +62,4 @@ bonart-creative-page/
 ├── astro.config.mjs
 ├── package.json
 └── tsconfig.json
+```

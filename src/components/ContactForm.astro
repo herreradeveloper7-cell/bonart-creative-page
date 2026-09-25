@@ -1,0 +1,470 @@
+---
+import { contact, needs } from '../data/contact';
+---
+
+<section
+  class="contact-card"
+  data-contact-card
+  aria-labelledby="contact-heading"
+>
+  <svg
+    class="paint-corner"
+    viewBox="0 0 240 180"
+    fill="none"
+    aria-hidden="true"
+  >
+    <path
+      d="M82 5 222 72M65 24l154 70M58 49l150 68M74 78l116 53"
+      stroke="currentColor"
+      stroke-width="25"
+      stroke-linecap="square"
+    />
+    <path
+      d="m106 3 127 61M45 47l166 77M87 98l84 39"
+      stroke="currentColor"
+      stroke-width="4"
+    />
+    <circle cx="39" cy="95" r="5" fill="currentColor" />
+    <circle cx="62" cy="126" r="3" fill="currentColor" />
+    <circle cx="185" cy="157" r="6" fill="currentColor" />
+  </svg>
+  <div class="brand-note" aria-hidden="true">
+    <img src="/media/bonart-logo.png" alt="" width="3117" height="2380" />
+    <span>Ideas que toman forma.</span>
+  </div>
+  <p class="eyebrow">Hagamos crecer tu idea</p>
+  <h2 id="contact-heading">
+    Cuéntanos sobre{' '}
+    <span class="paint-heading">
+      tu negocio
+      <svg viewBox="0 0 320 30" preserveAspectRatio="none" aria-hidden="true">
+        <path
+          d="M5 18Q100 4 309 13L297 24Q146 16 12 28L19 20Z"
+          fill="currentColor"
+        />
+        <path
+          d="M25 9Q167 0 316 7M1 23l35-3"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="3"
+        />
+      </svg>
+    </span>
+  </h2>
+  <p class="intro">
+    Queremos entender qué necesitas para recomendarte la mejor solución.
+  </p>
+  <form data-lead-form method="post">
+    <fieldset data-fields disabled>
+      <div class="fields-grid">
+        <label>
+          Nombre completo <span aria-hidden="true">*</span>
+          <input
+            name="firstname"
+            autocomplete="name"
+            required
+            maxlength="150"
+          />
+        </label>
+        <label>
+          Empresa
+          <input name="company" autocomplete="organization" maxlength="150" />
+        </label>
+        <label>
+          Correo electrónico <span aria-hidden="true">*</span>
+          <input
+            name="email"
+            type="email"
+            autocomplete="email"
+            required
+            maxlength="254"
+          />
+        </label>
+        <label>
+          WhatsApp <span aria-hidden="true">*</span>
+          <input
+            name="phone"
+            type="tel"
+            autocomplete="tel"
+            value="+57 "
+            required
+            maxlength="25"
+            aria-describedby="phone-help"
+          />
+          <small id="phone-help"></small>
+        </label>
+      </div>
+      <fieldset class="needs">
+        <legend>
+          ¿Qué necesitas? <span aria-hidden="true">*</span>
+        </legend>
+        <div class="choices">
+          {needs.map((need) => (
+            <label class="choice">
+              <input
+                type="radio"
+                name="necesidad_del_proyecto"
+                value={need}
+                required
+              />
+              <span>{need}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+      <div class="trap" aria-hidden="true">
+        <label>
+          Deja este campo vacío
+          <input name="website_url" tabindex="-1" autocomplete="off" />
+        </label>
+      </div>
+      <label class="consent">
+        <input type="checkbox" name="consent" required />
+        <span>{contact.consent}</span>
+      </label>
+      <button type="submit" class="submit" disabled>
+        Enviar y continuar <span aria-hidden="true">↗</span>
+      </button>
+      <p class="next-step">
+        Después podrás conversar con nosotros por WhatsApp.
+      </p>
+    </fieldset>
+  </form>
+  <noscript>
+    Activa JavaScript en tu navegador para enviar este formulario.
+  </noscript>
+  <p data-status role="status" aria-live="polite"></p>
+  <div data-success hidden tabindex="-1">
+    <h3>¡Gracias por contarnos!</h3>
+    <p>
+      Recibimos tus datos. Continúa por WhatsApp para hablar de tu proyecto.
+    </p>
+    <a data-whatsapp class="submit" target="_blank" rel="noopener noreferrer">
+      Hablar por WhatsApp ↗
+    </a>
+  </div>
+</section>
+
+<script>
+  import '../scripts/contact';
+</script>
+
+<style>
+  .contact-card {
+    --ink: #07101f;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: 32px 38px;
+    color: var(--ink);
+    background: var(--color-seashell);
+    text-align: left;
+    border-radius: 26px;
+  }
+  .paint-corner {
+    position: absolute;
+    z-index: -1;
+    width: 190px;
+    height: 145px;
+    top: -30px;
+    right: -62px;
+    color: var(--color-rose-kiss);
+    opacity: 0.55;
+    pointer-events: none;
+    transform: rotate(-12deg);
+  }
+  .brand-note {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+  .brand-note img {
+    width: 57px;
+    height: auto;
+  }
+  .brand-note span {
+    border-left: 1px solid var(--color-muted-teal);
+    padding-left: 12px;
+    font-size: 0.65rem;
+    color: #55515a;
+  }
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: 0.62rem;
+    font-weight: 600;
+    margin: 0 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .eyebrow::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-lipstick-red);
+  }
+  h2 {
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    letter-spacing: -0.055em;
+    margin: 0 0 20px;
+    max-width: 480px;
+    line-height: 1.13;
+  }
+  .paint-heading {
+    display: inline-block;
+    position: relative;
+    white-space: nowrap;
+    isolation: isolate;
+  }
+  .paint-heading svg {
+    position: absolute;
+    width: 105%;
+    height: 19px;
+    bottom: -7px;
+    left: -2%;
+    color: var(--color-rose-kiss);
+    z-index: -1;
+  }
+  .intro {
+    color: #55515a;
+    font-size: 0.82rem;
+    margin: 0 0 24px;
+    max-width: 440px;
+    line-height: 1.7;
+  }
+  fieldset {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    min-width: 0;
+  }
+  .fields-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 16px;
+  }
+  label,
+  legend {
+    font-size: 0.76rem;
+    font-weight: 500;
+  }
+  .fields-grid label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .fields-grid label > span {
+    display: none;
+  }
+  small {
+    font-size: 0.7rem;
+    font-weight: 400;
+    color: #625b62;
+  }
+  small:empty {
+    display: none;
+  }
+  input:not([type='radio']):not([type='checkbox']) {
+    width: 100%;
+    min-height: 46px;
+    background: #fff;
+    border: 1px solid
+      color-mix(in srgb, var(--color-muted-teal) 65%, var(--ink) 15%);
+    border-radius: 12px;
+    padding: 10px 12px;
+    color: var(--ink);
+    font-size: 16px;
+    transition:
+      border-color 0.18s,
+      box-shadow 0.18s;
+  }
+  input:not([type='radio']):not([type='checkbox']):focus {
+    border-color: var(--color-rose-kiss);
+    box-shadow: 0 0 0 3px
+      color-mix(in srgb, var(--color-rose-kiss) 16%, transparent);
+  }
+  input {
+    accent-color: var(--color-lipstick-red);
+  }
+  input:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 3px;
+  }
+  .needs {
+    margin-top: 22px;
+  }
+  legend {
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  legend > span {
+    color: var(--color-lipstick-red);
+  }
+  .choices {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .choice {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-height: 46px;
+    padding: 10px 12px;
+    border: 1px solid
+      color-mix(in srgb, var(--color-muted-teal) 60%, transparent);
+    border-radius: 12px;
+    cursor: pointer;
+    background: #fff;
+    transition:
+      background 0.18s,
+      border-color 0.18s;
+  }
+  .choice:last-child {
+    grid-column: 1 / -1;
+  }
+  .choice:hover {
+    border-color: var(--color-rose-kiss);
+  }
+  .choice:has(input:checked) {
+    border-color: var(--color-muted-teal);
+    background: color-mix(
+      in srgb,
+      var(--color-muted-teal) 38%,
+      var(--color-seashell)
+    );
+    box-shadow: inset 0 0 0 1px var(--color-muted-teal);
+  }
+  .choice input,
+  .consent input {
+    flex-shrink: 0;
+    width: 17px;
+    height: 17px;
+    margin: 0;
+  }
+  .consent {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin: 20px 0;
+    font-size: 0.68rem;
+    line-height: 1.7;
+    font-weight: 400;
+    color: #49464e;
+  }
+  .consent input {
+    margin-top: 2px;
+  }
+  .submit {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    align-items: center;
+    width: 100%;
+    min-height: 52px;
+    padding: 12px 20px;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    background: var(--color-lipstick-red);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition:
+      background 0.18s,
+      box-shadow 0.18s;
+  }
+  .submit > span {
+    font-size: 1.3rem;
+    line-height: 1;
+  }
+  .submit:hover:not(:disabled) {
+    background: var(--ink);
+    box-shadow: 4px 4px 0 var(--color-rose-kiss);
+  }
+  .submit:disabled {
+    cursor: not-allowed;
+    background: color-mix(
+      in srgb,
+      var(--color-rose-kiss) 18%,
+      var(--color-seashell)
+    );
+    color: #75666c;
+    border-color: color-mix(in srgb, var(--color-rose-kiss) 28%, transparent);
+  }
+  fieldset:disabled .submit {
+    cursor: wait;
+  }
+  .next-step {
+    text-align: center;
+    font-size: 0.65rem;
+    color: #625b62;
+    margin: 12px 0 0;
+  }
+  [data-status]:empty {
+    display: none;
+  }
+  [data-status] {
+    font-size: 0.85rem;
+    color: var(--ink);
+    border-left: 3px solid var(--color-lipstick-red);
+    padding-left: 12px;
+  }
+  [data-success] {
+    border-top: 5px solid var(--color-muted-teal);
+    margin-top: 24px;
+    padding-top: 20px;
+  }
+  [data-success] h3 {
+    font-size: 1.5rem;
+    letter-spacing: -0.04em;
+  }
+  [data-success] p {
+    font-size: 0.85rem;
+  }
+  .trap {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  @media (max-width: 480px) {
+    .contact-card {
+      padding: 26px 22px;
+      border-radius: 22px;
+    }
+    .brand-note {
+      margin-bottom: 24px;
+    }
+    .brand-note span {
+      font-size: 0.58rem;
+      max-width: 120px;
+    }
+    .paint-corner {
+      width: 145px;
+      right: -62px;
+      top: -38px;
+    }
+    .fields-grid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .choices {
+      grid-template-columns: 1fr;
+    }
+    .intro {
+      font-size: 0.8rem;
+      margin-bottom: 20px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    input,
+    .choice,
+    .submit {
+      transition: none !important;
+    }
+  }
+</style>
